@@ -13,6 +13,14 @@ const uiOverrides: TLUiOverrides = {
   },
 }
 
+function ToolLock() {
+  const editor = useEditor()
+  React.useEffect(() => {
+    editor.updateInstanceState({ isToolLocked: true })
+  }, [editor])
+  return null
+}
+
 interface WhiteboardProps {
   note: Note
 }
@@ -70,6 +78,7 @@ export function Whiteboard({ note }: WhiteboardProps) {
         overrides={uiOverrides}
       >
         <SaveStatus noteId={note.id} />
+        <ToolLock />
       </Tldraw>
     </div>
   )
