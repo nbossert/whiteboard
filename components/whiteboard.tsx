@@ -6,10 +6,18 @@ import "@tldraw/tldraw/tldraw.css"
 import { useNotesStore } from "@/lib/store"
 import type { Note } from "@/lib/types"
 
-// Define the UI overrides to disable all keyboard shortcuts
+// Define the UI overrides to disable all keyboard shortcuts and remove
+// any displayed key hints from the built-in tools.
 const uiOverrides: TLUiOverrides = {
   keyboardShortcuts: (_editor, _shortcuts, _actions) => {
     return {} // Return an empty object to disable all shortcuts
+  },
+  tools: (_editor, tools) => {
+    const updated = {}
+    for (const [id, tool] of Object.entries(tools)) {
+      updated[id] = { ...tool, kbd: '' }
+    }
+    return updated
   },
 }
 
