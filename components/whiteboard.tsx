@@ -1,7 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { Tldraw, useEditor, type TLStoreSnapshot, type TLUiOverrides } from "@tldraw/tldraw"
+import {
+  Tldraw,
+  useEditor,
+  type TLStoreSnapshot,
+  type TLUiOverrides,
+} from "@tldraw/tldraw"
 import "@tldraw/tldraw/tldraw.css"
 import { useNotesStore } from "@/lib/store"
 import type { Note } from "@/lib/types"
@@ -19,6 +24,14 @@ function ToolLock() {
     editor.updateInstanceState({ isToolLocked: true })
   }, [editor])
   return null
+}
+
+function useInitialSnapshot(snapshot: TLStoreSnapshot) {
+  const ref = React.useRef<TLStoreSnapshot | null>(null)
+  if (!ref.current) {
+    ref.current = snapshot
+  }
+  return ref.current
 }
 
 interface WhiteboardProps {
@@ -68,11 +81,12 @@ function SaveStatus({ noteId }: { noteId: string }) {
  * The main whiteboard component that wraps the Tldraw editor.
  */
 export function Whiteboard({ note }: WhiteboardProps) {
+  const initialSnapshot = useInitialSnapshot(note.content as TLStoreSnapshot)
   return (
     <div className="relative h-full w-full">
       <Tldraw
         // Directly pass the note's content. This was the state before the "blink fix".
-        snapshot={note.content as TLStoreSnapshot}
+        snapshot={initialSnapshot}
         forceMobile={false}
         // Apply the overrides to disable keyboard shortcuts
         overrides={uiOverrides}
